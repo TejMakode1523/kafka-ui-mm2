@@ -144,7 +144,7 @@ const Overview: React.FC = () => {
           </Metrics.Indicator>
           <Metrics.Indicator label="Message Rate">
             {data?.messagesInPerSec !== undefined
-              ? ${data.messagesInPerSec.toFixed(2)}/s
+              ? `${data.messagesInPerSec.toFixed(2)}/s`
               : 'N/A'}
           </Metrics.Indicator>
           {data?.mm2Lag != null && (
