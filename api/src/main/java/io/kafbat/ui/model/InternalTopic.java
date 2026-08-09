@@ -96,6 +96,7 @@ public class InternalTopic {
     if (metrics != null) {
       builder.bytesInPerSec(metrics.getIoRates().topicBytesInPerSec().get(this.name));
       builder.bytesOutPerSec(metrics.getIoRates().topicBytesOutPerSec().get(this.name));
+      builder.messagesInPerSec(metrics.getIoRates().topicMessagesInPerSec().get(this.name));
     }
     return builder.build();
   }
@@ -178,6 +179,7 @@ public class InternalTopic {
     if (metrics != null) {
       topic.bytesInPerSec(metrics.getIoRates().topicBytesInPerSec().get(topicDescription.name()));
       topic.bytesOutPerSec(metrics.getIoRates().topicBytesOutPerSec().get(topicDescription.name()));
+      topic.messagesInPerSec(metrics.getIoRates().topicMessagesInPerSec().get(topicDescription.name()));
     }
 
     topic.topicConfigs(

@@ -2796,6 +2796,12 @@ components:
           type: number
         bytesOutPerSec:
           type: number
+        messagesInPerSec:
+          type: number
+        mm2Lag:
+          type: integer
+          format: int64
+          nullable: true
         underReplicatedPartitions:
           type: integer
         cleanUpPolicy:
@@ -2968,6 +2974,12 @@ components:
           type: number
         bytesOutPerSec:
           type: number
+        messagesInPerSec:
+          type: number
+        mm2Lag:
+          type: integer
+          format: int64
+          nullable: true
         segmentSize:
           type: integer
           format: int64

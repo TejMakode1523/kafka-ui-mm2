@@ -191,7 +191,8 @@ enum TopicColumnsToSort {
   SIZE,
   MESSAGES_COUNT,
   MESSAGES_IN_PER_SEC,
-  MM2_LAG
+  MM2_LAG,
+  BYTES_IN_PER_SEC
 }
 
 model Topic {

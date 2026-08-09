@@ -80,6 +80,16 @@ const TopicTable: React.FC<{ params: GetTopicsRequest }> = ({ params }) => {
         },
       },
       {
+        id: TopicColumnsToSort.BYTES_IN_PER_SEC,
+        header: 'Bytes In/s',
+        accessorKey: 'bytesInPerSec',
+        size: 120,
+        cell: (args)=>{
+          const val=args.getValue<number | undefined>();
+          return val!==undefined ? `${val.toFixed(4)}/s` : 'N/A';
+        },
+      },
+      {
         id: TopicColumnsToSort.MM2_LAG,
         header: 'MM2 Lag',
         accessorKey: 'mm2Lag',
