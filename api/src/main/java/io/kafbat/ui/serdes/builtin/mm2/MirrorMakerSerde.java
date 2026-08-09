@@ -24,11 +24,11 @@ abstract class MirrorMakerSerde extends StructSerde implements BuiltInSerde {
         }),  DeserializeResult.Type.JSON, Map.of());
   }
 
-  protected Struct deserializeKey(byte[] bytes) {
+  public Struct deserializeKey(byte[] bytes) {
     return getKeySchema().read(ByteBuffer.wrap(bytes));
   }
 
-  protected Struct deserializeValue(byte[] bytes) {
+  public Struct deserializeValue(byte[] bytes) {
     ByteBuffer wrap = ByteBuffer.wrap(bytes);
     Optional<Schema> valueSchema;
     if (versioned) {

@@ -85,7 +85,9 @@ public class TopicsService {
                           offsets,
                           stats.getMetrics(),
                           stats.getClusterState()
-                      );
+                      ).stream()
+                          .map(t -> t.withMm2Lag(stats.getMm2TopicLag()))
+                          .collect(toList());
                     }))).flatMap(Function.identity());
   }
 
@@ -475,7 +477,10 @@ public class TopicsService {
       return Mono.just(
           clusterState.getTopicIndex().find(search, showInternal, useFts, null)
       ).flatMap(lst -> filterExisting(cluster, lst)).map(lst ->
-        lst.stream().map(t -> t.withMetrics(stats.getMetrics())).toList()
+          lst.stream()
+              .map(t -> t.withMetrics(stats.getMetrics()))
+              .map(t -> t.withMm2Lag(stats.getMm2TopicLag()))
+              .toList()
       );
     } catch (Exception e) {
       return Mono.error(e);

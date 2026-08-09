@@ -42,6 +42,9 @@ public class InternalTopic {
   // rates from metrics
   private final BigDecimal bytesInPerSec;
   private final BigDecimal bytesOutPerSec;
+  private final BigDecimal messagesInPerSec;
+
+  private final Long mm2Lag;
 
   // from log dir data
   private final long segmentSize;
@@ -80,6 +83,11 @@ public class InternalTopic {
               .map(InternalTopicConfig::getValue)
               .map(mapper)
         );
+  }
+
+  public InternalTopic withMm2Lag(Map<String, Long> mm2TopicLag){
+    Long lag =mm2TopicLag != null ? mm2TopicLag.get(this.name) : null;
+    return toBuilder().mm2Lag(lag).build();
   }
 
 

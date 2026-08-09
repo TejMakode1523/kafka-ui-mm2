@@ -2,20 +2,21 @@ logging:
   level:
     root: INFO
     io.kafbat.ui: DEBUG
-    reactor.netty.http.server.AccessLog: INFO
-    org.springframework.security: DEBUG
+
+spring:
+  jmx:
+    enabled: true
 
 kafka:
   clusters:
     - name: local
       bootstrapServers: localhost:9092
-      schemaRegistry: http://localhost:8085
-      kafka-connect:
-        - name: test
-          address: http://localhost:8083
-  fts:
-    enabled: true
-    default-enabled: true
+      metrics:
+        port: 11001
+        type: PROMETHEUS
+
+auth:
+  type: DISABLED
 
 dynamic.config.enabled: true
 

@@ -28,7 +28,8 @@ public class Metrics {
   public record IoRates(Map<Integer, BigDecimal> brokerBytesInPerSec,
                         Map<Integer, BigDecimal> brokerBytesOutPerSec,
                         Map<String, BigDecimal> topicBytesInPerSec,
-                        Map<String, BigDecimal> topicBytesOutPerSec) {
+                        Map<String, BigDecimal> topicBytesOutPerSec),
+                        Map<String, BigDecimal> topicMessagesInPerSec) {
 
     static IoRates empty() {
       return IoRates.builder()
@@ -36,6 +37,7 @@ public class Metrics {
           .brokerBytesInPerSec(Map.of())
           .topicBytesOutPerSec(Map.of())
           .topicBytesInPerSec(Map.of())
+          .topicMessagesInPerSec(Map.of())
           .build();
     }
   }

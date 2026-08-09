@@ -16,6 +16,7 @@ import io.kafbat.ui.model.Statistics;
 import io.kafbat.ui.service.metrics.scrape.KafkaConnectState;
 import io.kafbat.ui.service.metrics.scrape.ScrapedClusterState;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -38,6 +39,7 @@ public class StatisticsService {
   private final StatisticsCache cache;
   private final ClustersProperties clustersProperties;
   private final QuorumInfoMapper quorumInfoMapper;
+  private final Mm2lagService mm2lagService;
 
   public Mono<Statistics> updateCache(KafkaCluster c) {
     return getStatistics(c).doOnSuccess(m -> cache.replace(c, m));
@@ -57,7 +59,8 @@ public class StatisticsService {
                             loadKafkaConnects(cluster),
                             loadQuorumInfo(ac)
                                 .map(quorumInfo -> new LoadQuorumInfoResult(Optional.of(quorumInfo), KRAFT))
-                                .onErrorResume(StatisticsService::handleQuorumInfoErrors)))
+                                    .onErrorResume(StatisticsService::handleQuorumInfoErrors),
+                                mm2lagService.computeLagForCluster(cluster)))
                         .flatMap(t ->
                             scrapeMetrics(cluster, t.getT2(), description)
                                 .map(metrics -> createStats(description,
@@ -66,6 +69,7 @@ public class StatisticsService {
                                     t.getT3(),
                                     metrics,
                                     t.getT4(),
+                                    t.getT5(),
                                     ac))
                         )
                     )
@@ -101,6 +105,7 @@ public class StatisticsService {
                                  List<KafkaConnectState> connects,
                                  Metrics metrics,
                                  LoadQuorumInfoResult loadQuorumInfoResult,
+                                 Map<String, Long> mm2TopicLag,
                                  ReactiveAdminClient ac) {
     var stats = Statistics.builder()
         .status(ServerStatusDTO.ONLINE)
@@ -114,7 +119,8 @@ public class StatisticsService {
                 Collectors.toMap(KafkaConnectState::getName, c -> c)
             )
         )
-        .controller(loadQuorumInfoResult.controllerType);
+        .controller(loadQuorumInfoResult.controllerType)
+        .mm2TopicLag(mm2TopicLag);
 
     loadQuorumInfoResult.quorumInfo.ifPresent(info -> stats.quorumInfo(quorumInfoMapper.toInternalQuorumInfo(info)));
 

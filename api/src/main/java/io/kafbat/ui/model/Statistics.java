@@ -25,6 +25,8 @@ public class Statistics implements AutoCloseable {
   Map<String, KafkaConnectState> connectStates;
   ControllerType controller;
   InternalQuorumInfo quorumInfo;
+  @lombok.Builder.Default
+  Map<String, Long> mm2TopicLag =java.util.Map.of();
 
   public static Statistics empty() {
     return builder()
@@ -35,6 +37,7 @@ public class Statistics implements AutoCloseable {
         .metrics(Metrics.empty())
         .clusterState(ScrapedClusterState.empty())
         .connectStates(Map.of())
+        .mm2TopicLag(Map.of())
         .build();
   }
 

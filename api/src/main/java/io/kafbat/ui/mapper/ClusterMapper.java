@@ -51,6 +51,7 @@ import org.apache.kafka.common.resource.ResourcePattern;
 import org.apache.kafka.common.resource.ResourceType;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.Named;
 import org.openapitools.jackson.nullable.JsonNullable;
 
 @Mapper(componentModel = "spring")
@@ -113,6 +114,8 @@ public interface ClusterMapper {
     return configSynonym;
   }
 
+  @Mapping(target = "messagesInPerSec", source = "messagesInPerSec", qualifiedByName = "bigDecimalToDouble")
+  @Mapping(target = "mm2Lag", source = "mm2Lag" ,qualifiedByName = "longToJsonNullable")
   TopicDTO toTopic(InternalTopic topic);
 
   default <T> JsonNullable<T> toJsonNullable(T value) {
@@ -122,6 +125,13 @@ public interface ClusterMapper {
       return JsonNullable.of(value);
     }
   }
+  @Named("bigDecimalToDouble")
+  default Double bigDecimalToDouble(BigDecimal value) {return value !=null? value.doubleValue():null;}
+
+  @Named("longToJsonNullable")
+  default JsonNullable<Long> longToJsonNullable(Long value) {
+    return value != null ? JsonNullable.of(value) : JsonNullable.undefined();
+  }
 
   PartitionDTO toPartition(InternalPartition topic);
 
@@ -129,6 +139,8 @@ public interface ClusterMapper {
 
   @Mapping(target = "keySerde", ignore = true)
   @Mapping(target = "valueSerde", ignore = true)
+  @Mapping(target = "messagesInPerSec", source = "messagesInPerSec", qualifiedByName = "bigDecimalToDouble")
+  @Mapping(target = "mm2Lag", source = "mm2Lag" ,qualifiedByName = "longToJsonNullable")
   TopicDetailsDTO toTopicDetails(InternalTopic topic);
 
   @Mapping(target = "isReadOnly", source = "readOnly")

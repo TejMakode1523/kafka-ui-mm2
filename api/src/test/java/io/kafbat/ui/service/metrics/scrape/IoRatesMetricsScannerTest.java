@@ -29,9 +29,9 @@ class IoRatesMetricsScannerTest {
             "some_unknown_prefix_brokertopicmetrics_fifteenminuterate{name=\"bytesoutpersec\",topic=\"test\",} 2.0"
         )
     );
-    assertThat(ioRatesMetricsScanner.bytesInFifteenMinuteRate)
+    assertThat(ioRatesMetricsScanner.bytesInOneMinuteRate)
         .containsEntry("test", new BigDecimal("3.0"));
-    assertThat(ioRatesMetricsScanner.bytesOutFifteenMinuteRate)
+    assertThat(ioRatesMetricsScanner.bytesOutOneMinuteRate)
         .containsEntry("test", new BigDecimal("6.0"));
   }
 
@@ -50,12 +50,12 @@ class IoRatesMetricsScannerTest {
         )
     );
 
-    assertThat(ioRatesMetricsScanner.brokerBytesInFifteenMinuteRate)
+    assertThat(ioRatesMetricsScanner.brokerBytesInOneMinuteRate)
         .hasSize(2)
         .containsEntry(1, new BigDecimal("1.0"))
         .containsEntry(2, new BigDecimal("10.0"));
 
-    assertThat(ioRatesMetricsScanner.brokerBytesOutFifteenMinuteRate)
+    assertThat(ioRatesMetricsScanner.brokerBytesOutOneMinuteRate)
         .hasSize(2)
         .containsEntry(1, new BigDecimal("2.0"))
         .containsEntry(2, new BigDecimal("20.0"));

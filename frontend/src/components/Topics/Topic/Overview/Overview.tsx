@@ -142,6 +142,16 @@ const Overview: React.FC = () => {
           <Metrics.Indicator label="Message Count">
             {messageCount}
           </Metrics.Indicator>
+          <Metrics.Indicator label="Message Rate">
+            {data?.messagesInPerSec !== undefined
+              ? ${data.messagesInPerSec.toFixed(2)}/s
+              : 'N/A'}
+          </Metrics.Indicator>
+          {data?.mm2Lag != null && (
+            <Metrics.Indicator label="MM2 Lag">
+              {data.mm2Lag.toLocaleString()}
+            </Metrics.Indicator>
+          )}
         </Metrics.Section>
       </Metrics.Wrapper>
       <Table

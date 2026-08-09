@@ -70,6 +70,28 @@ const TopicTable: React.FC<{ params: GetTopicsRequest }> = ({ params }) => {
         maxSize: 148,
       },
       {
+        id: TopicColumnsToSort.MESSAGES_IN_PER_SEC,
+        header: 'Message Rate',
+        accessorKey: 'messagesInPerSec',
+        size: 120,
+        cell: (args)=>{
+          const val=args.getValue<number | undefined>();
+          return val!==undefined ? `${val.toFixed(2)}/s` : 'N/A';
+        },
+      },
+      {
+        id: TopicColumnsToSort.MM2_LAG,
+        header: 'MM2 Lag',
+        accessorKey: 'mm2Lag',
+        size: 110,
+        cell: (args) =>{
+          const val = args.getValue<number | null | undefined>();
+          if (val === null || val === undefined) return '_';
+          if (val === 0) return '✓ 0';
+          return val.toLocaleString();
+        },
+      },
+      {
         id: TopicColumnsToSort.MESSAGES_COUNT,
         header: 'Number of messages',
         accessorKey: 'messagesCount',

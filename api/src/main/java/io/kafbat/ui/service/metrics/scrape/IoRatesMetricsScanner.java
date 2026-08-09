@@ -16,14 +16,15 @@ import java.util.Map;
 class IoRatesMetricsScanner {
 
   public static final String BROKER_TOPIC_METRICS_SUFFIX = "BrokerTopicMetrics";
-  public static final String FIFTEEN_MINUTE_RATE_SUFFIX = "FifteenMinuteRate";
+  public static final String ONE_MINUTE_RATE_SUFFIX = "OneMinuteRate";
   // per broker
-  final Map<Integer, BigDecimal> brokerBytesInFifteenMinuteRate = new HashMap<>();
-  final Map<Integer, BigDecimal> brokerBytesOutFifteenMinuteRate = new HashMap<>();
+  final Map<Integer, BigDecimal> brokerBytesInOneMinuteRate = new HashMap<>();
+  final Map<Integer, BigDecimal> brokerBytesOutOneMinuteRate = new HashMap<>();
 
   // per topic
-  final Map<String, BigDecimal> bytesInFifteenMinuteRate = new HashMap<>();
-  final Map<String, BigDecimal> bytesOutFifteenMinuteRate = new HashMap<>();
+  final Map<String, BigDecimal> bytesInOneMinuteRate = new HashMap<>();
+  final Map<String, BigDecimal> bytesOutOneMinuteRate = new HashMap<>();
+  final Map<String, BigDecimal> messagesInOneMinuteRate = new HashMap<>();
 
   IoRatesMetricsScanner(Map<Integer, List<MetricSnapshot>> perBrokerMetrics) {
     for (Map.Entry<Integer, List<MetricSnapshot>> broker : perBrokerMetrics.entrySet()) {
@@ -48,43 +49,47 @@ class IoRatesMetricsScanner {
 
   Metrics.IoRates get() {
     return Metrics.IoRates.builder()
-        .topicBytesInPerSec(bytesInFifteenMinuteRate)
-        .topicBytesOutPerSec(bytesOutFifteenMinuteRate)
-        .brokerBytesInPerSec(brokerBytesInFifteenMinuteRate)
-        .brokerBytesOutPerSec(brokerBytesOutFifteenMinuteRate)
+        .topicBytesInPerSec(bytesInOneMinuteRate)
+        .topicBytesOutPerSec(bytesOutOneMinuteRate)
+        .topicMessagesInPerSec(messagesInOneMinuteRate)
+        .brokerBytesInPerSec(brokerBytesInOneMinuteRate)
+        .brokerBytesOutPerSec(brokerBytesOutOneMinuteRate)
         .build();
   }
 
   private void updateBrokerIOrates(int nodeId, String name, Labels labels, double value) {
-    if (!brokerBytesInFifteenMinuteRate.containsKey(nodeId)
+    if (!brokerBytesInOneMinuteRate.containsKey(nodeId)
         && labels.size() == 1
         && "BytesInPerSec".equalsIgnoreCase(labels.getValue(0))
         && CI.contains(name, BROKER_TOPIC_METRICS_SUFFIX)
-        && CI.endsWith(name, FIFTEEN_MINUTE_RATE_SUFFIX)) {
-      brokerBytesInFifteenMinuteRate.put(nodeId, BigDecimal.valueOf(value));
+        && CI.endsWith(name, ONE_MINUTE_RATE_SUFFIX)) {
+      brokerBytesInOneMinuteRate.put(nodeId, BigDecimal.valueOf(value));
     }
-    if (!brokerBytesOutFifteenMinuteRate.containsKey(nodeId)
+    if (!brokerBytesOutOneMinuteRate.containsKey(nodeId)
         && labels.size() == 1
         && "BytesOutPerSec".equalsIgnoreCase(labels.getValue(0))
         && CI.contains(name, BROKER_TOPIC_METRICS_SUFFIX)
-        && CI.endsWith(name, FIFTEEN_MINUTE_RATE_SUFFIX)) {
-      brokerBytesOutFifteenMinuteRate.put(nodeId, BigDecimal.valueOf(value));
+        && CI.endsWith(name, ONE_MINUTE_RATE_SUFFIX)) {
+      brokerBytesOutOneMinuteRate.put(nodeId, BigDecimal.valueOf(value));
     }
   }
 
   private void updateTopicsIOrates(String name, Labels labels, double value) {
     if (labels.contains("topic")
         && CI.contains(name, BROKER_TOPIC_METRICS_SUFFIX)
-        && CI.endsWith(name, FIFTEEN_MINUTE_RATE_SUFFIX)) {
+        && CI.endsWith(name, ONE_MINUTE_RATE_SUFFIX)) {
       String topic = labels.get("topic");
       if (labels.contains("name")) {
         var nameLblVal = labels.get("name");
         if ("BytesInPerSec".equalsIgnoreCase(nameLblVal)) {
           BigDecimal val = BigDecimal.valueOf(value);
-          bytesInFifteenMinuteRate.merge(topic, val, BigDecimal::add);
+          bytesInOneMinuteRate.merge(topic, val, BigDecimal::add);
         } else if ("BytesOutPerSec".equalsIgnoreCase(nameLblVal)) {
           BigDecimal val = BigDecimal.valueOf(value);
-          bytesOutFifteenMinuteRate.merge(topic, val, BigDecimal::add);
+          bytesOutOneMinuteRate.merge(topic, val, BigDecimal::add);
+        } else if ("MessagesInPerSec".equalsIgnoreCase(nameLblVal)) {
+          BigDecimal val = BigDecimal.valueOf(value);
+          messagesInOneMinuteRate.merge(topic, val, BigDecimal::add);
         }
       }
     }
