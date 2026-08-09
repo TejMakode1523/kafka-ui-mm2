@@ -30,7 +30,7 @@ public class Mm2LagService {
 
   public Mono<Map<String, Long>> computeLagForCluster(KafkaCluster targetCluster) {
     return adminClientService.get(targetCluster)
-        .flatMap(ac -> ac.topics(true))
+        .flatMap(ac -> ac.listTopics(true))
         .flatMap(allTopics -> {
           // Find all mm2-offset-syncs.*.internal topics on this cluster
           List<String> syncTopics = allTopics.stream()
