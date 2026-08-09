@@ -39,7 +39,7 @@ public class StatisticsService {
   private final StatisticsCache cache;
   private final ClustersProperties clustersProperties;
   private final QuorumInfoMapper quorumInfoMapper;
-  private final Mm2lagService mm2lagService;
+  private final Mm2LagService mm2lagService;
 
   public Mono<Statistics> updateCache(KafkaCluster c) {
     return getStatistics(c).doOnSuccess(m -> cache.replace(c, m));

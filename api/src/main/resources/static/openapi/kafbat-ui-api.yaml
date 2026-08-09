@@ -5073,6 +5073,9 @@ components:
         bytesOutPerSec:
           type: number
           format: double
+        messagesInPerSec:
+          type: number
+          format: double
         underReplicatedPartitions:
           type: integer
           format: int32
@@ -5086,6 +5089,10 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Partition'
+        mm2Lag:
+          type: integer
+          format: int64
+          nullable: true
     TopicAnalysis:
       type: object
       properties:
@@ -5285,6 +5292,9 @@ components:
         bytesOutPerSec:
           type: number
           format: double
+        messagesInPerSec:
+          type: number
+          format: double
         segmentSize:
           type: integer
           format: int64
@@ -5300,6 +5310,10 @@ components:
           type: string
         valueSerde:
           type: string
+        mm2Lag:
+          type: integer
+          format: int64
+          nullable: true
     TopicLogdirs:
       type: object
       properties:
