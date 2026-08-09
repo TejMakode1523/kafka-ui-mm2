@@ -28,7 +28,7 @@ public class Metrics {
   public record IoRates(Map<Integer, BigDecimal> brokerBytesInPerSec,
                         Map<Integer, BigDecimal> brokerBytesOutPerSec,
                         Map<String, BigDecimal> topicBytesInPerSec,
-                        Map<String, BigDecimal> topicBytesOutPerSec),
+                        Map<String, BigDecimal> topicBytesOutPerSec,
                         Map<String, BigDecimal> topicMessagesInPerSec) {
 
     static IoRates empty() {
